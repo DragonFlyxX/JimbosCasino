@@ -1,0 +1,28 @@
+[manifest]
+version = "1.0.2"
+dump_lua = true
+priority = 2
+
+#Patch for Cha Ching
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''G.FUNCS.evaluate_play()'''
+position = "before"
+match_indent = true
+payload = '''
+G.GAME.Casino_Scoring_Active = true
+G.GAME.evil_root_money_cards = {}
+'''
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''G.STATE_COMPLETE.playing_hand = true'''
+position = "after"
+match_indent = true
+payload = '''
+G.GAME.Casino_Scoring_Active = false
+G.GAME.evil_root_money_cards = nil
+'''
