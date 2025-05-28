@@ -6,3 +6,4 @@ Features:
 
 Art / Programming was done solely by me, and although I had fun getting these jokers to work, I am NEVER touching lua code again.
 - Updates + Bug Fixes are unlikely ( Unless incredibly necessary ).
+- If The mod isn't loading correctly then remove the "-main".
