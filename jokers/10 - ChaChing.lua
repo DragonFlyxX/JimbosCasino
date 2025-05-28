@@ -27,8 +27,6 @@ SMODS.Joker({
             local earned = target_card.cha_ching_money_earned
             local retriggers = math.floor(earned / 4)
 
-            print(string.format("[Cha Ching] Trigger: %s earned $%s → %d retriggers",
-    (target_card.get_name and target_card:get_name()) or "Unnamed", earned, retriggers))
             if retriggers > 0 then
                 return {
                     message = localize('k_again_ex'),
@@ -39,6 +37,7 @@ SMODS.Joker({
         end
     end
 end
+
 })
 -- Hook to track money earned by individual cards
 local old_ease = ease_dollars
@@ -82,10 +81,3 @@ end
 to_big = to_big or function(x)
     return x
 end
-
-
-
-
-
-
-
