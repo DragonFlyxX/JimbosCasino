@@ -24,13 +24,6 @@ SMODS.Atlas {
     py = 95,
 }
 
-SMODS.Atlas{
-    key = "Casino_enhanced",
-    path = "Vintage_Card.png",
-    px = 71,
-    py = 95
-}
-
 local subdir_cards = "jokers"
 local cards = NFS.getDirectoryItems(SMODS.current_mod.path .. subdir_cards)
 for _, filename in pairs(cards) do
