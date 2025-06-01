@@ -25,6 +25,7 @@ SMODS.Joker {
     },
     calculate = function(self, card, context)
         if card.debuff then return nil end
+        local whoami = context.blueprint_card or card
         if context.individual and context.cardarea == G.play and not context.end_of_round then
             if context.other_card and context.other_card.get_id and context.other_card:get_id() == 11 then
                 return {
@@ -33,16 +34,19 @@ SMODS.Joker {
                 }
             end
         end
-        local whoami = context.blueprint_card or card
         if context.setting_blind and not whoami.getting_sliced then
             G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+            juice_card(whoami)
             G.E_MANAGER:add_event(Event({
                 func = function()
                     self.hands_sub = G.GAME.round_resets.hands - 1
-        ease_hands_played(-self.hands_sub)
+                    ease_hands_played(-self.hands_sub)
                     return true
                 end
             }))
+            return {
+                message = "En Garde",
+            }
         end
-    end,
+    end
 }
