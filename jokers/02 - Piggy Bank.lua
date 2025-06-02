@@ -40,15 +40,17 @@ return SMODS.Joker {
     end,
     calculate = function(self, card, context)
         if card.debuff then return end
+
         if context.joker_main and context.scoring_hand then
             local dollars = G.GAME and G.GAME.dollars or 0
             local amount = math.floor(dollars / 2)
             return {
-                message = localize{type='variable', key='a_chips', vars={amount}} .. " & " .. localize{type='variable', key='a_mult', vars={amount}},
+                message = "Cash Out",
                 chips = amount,
-                mult_mod = amount
+                mult_mod = amount,
             }
         end
+
         if context.after and not context.repetition and not context.game_over and not context.blueprint and not context.individual then
             local base_prob = G.GAME and G.GAME.probabilities.normal or 1
             local odds = card.ability.extra.break_chance or 6
@@ -75,15 +77,13 @@ return SMODS.Joker {
                     end
                 })
                 return {
-                    message = "Broken",
+                    message = "Broken"
                 }
             else
                 return {
-                    message = localize('k_safe_ex')
+                    message = localize('k_safe_ex') or "Safe"
                 }
             end
         end
     end
 }
-
-
