@@ -1,13 +1,20 @@
 Casino = Casino or {}
+
 function Casino.rank_from_deck(seed)
 	local ranks = {}
 	seed = seed or 'gilded_heart'
 	for _, card in pairs(G.playing_cards) do
-		ranks[card.base.value] = card.base.value
+		if not SMODS.has_enhancement(card, "m_stone") then
+			ranks[card.base.value] = card.base.value
+		end
+	end
+	if next(ranks) == nil then
+		return "Jack"
 	end
 	local chosen = pseudorandom_element(ranks, pseudoseed(seed))
 	return chosen
 end
+
 SMODS.Joker({
 	key = "gilded_heart",
 	atlas = "CasinoJokers",
@@ -26,7 +33,7 @@ SMODS.Joker({
 			"{C:attention}#2#{} of {C:red}hearts{} {C:attention}3{}",
 			"additional times when",
 			"played or in hand",
-			"{s:0.8}Rank changes each round",
+			"{s:0.8}Rank changes at start of round",
 		}},
 	config = {extra = {repetitions = 1, rank = 'Jack'}},
 	loc_vars = function(self, info_queue, card)
