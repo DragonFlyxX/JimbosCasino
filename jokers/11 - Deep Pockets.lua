@@ -23,40 +23,55 @@ SMODS.Joker {
     end,
     add_to_deck = function(self, card, from_debuff)
         card._deep_pockets_applied = false
-        if card.shop_edition or card.shop_cost then return end  -- Ignore shop previews
+        if card.shop_edition or card.shop_cost then return end
+
+        -- Ensure tracker exists
+        G.GAME.deep_pockets_total_applied = G.GAME.deep_pockets_total_applied or 0
+
         if G.GAME.dollars > card.ability.extra.threshold then
-            G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
-            card._deep_pockets_applied = true
+            if not card._deep_pockets_applied then
+                G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
+                card._deep_pockets_applied = true
+                G.GAME.deep_pockets_total_applied = G.GAME.deep_pockets_total_applied + card.ability.extra.slots
+            end
         end
     end,
+
     remove_from_deck = function(self, card, from_debuff)
         if card._deep_pockets_applied then
             G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.slots
+            G.GAME.deep_pockets_total_applied = G.GAME.deep_pockets_total_applied - card.ability.extra.slots
             card._deep_pockets_applied = false
         end
     end,
+
     update = function(self, card)
-    if not card.ability or not card.ability.extra then return end
-    if not G.jokers or not G.jokers.cards then return end
-    local owned = false
-    for _, c in ipairs(G.jokers.cards) do
-        if c == card then
-            owned = true
-            break
+        if not card.ability or not card.ability.extra then return end
+        if not G.jokers or not G.jokers.cards then return end
+
+        -- Ensure tracker exists
+        G.GAME.deep_pockets_total_applied = G.GAME.deep_pockets_total_applied or 0
+
+        local owned = false
+        for _, c in ipairs(G.jokers.cards) do
+            if c == card then
+                owned = true
+                break
+            end
         end
-    end
-    if not owned then return end
-    local has_money = G.GAME.dollars > card.ability.extra.threshold
-    local applied = card._deep_pockets_applied
-    if has_money and not applied then
-        G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
-        card._deep_pockets_applied = true
-    elseif not has_money and applied then
-        G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.slots
-        card._deep_pockets_applied = false
-    end
-end
+        if not owned then return end
+
+        local has_money = G.GAME.dollars > card.ability.extra.threshold
+        local applied = card._deep_pockets_applied
+
+        if has_money and not applied then
+            G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
+            G.GAME.deep_pockets_total_applied = G.GAME.deep_pockets_total_applied + card.ability.extra.slots
+            card._deep_pockets_applied = true
+        elseif not has_money and applied then
+            G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.slots
+            G.GAME.deep_pockets_total_applied = G.GAME.deep_pockets_total_applied - card.ability.extra.slots
+            card._deep_pockets_applied = false
+        end
+    end,
 }
-
-
-
